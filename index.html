@@ -73,22 +73,19 @@ table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}th,td{pa
     'llama-3b':  { id: 'Llama-3.2-3B-Instruct-q4f16_1-MLC',   size: '~2GB',   label: '3B · balanced · default · most laptops' },
     'qwen-7b':   { id: 'Qwen2.5-7B-Instruct-q4f16_1-MLC',     size: '~5GB',   label: '7B · capable · needs decent GPU (M-series Mac / 8GB+ VRAM)' },
     'llama-8b':  { id: 'Llama-3.1-8B-Instruct-q4f16_1-MLC',   size: '~5GB',   label: '8B · common · needs decent GPU' },
-    'llama-70b': { id: 'Llama-3.1-70B-Instruct-q4f16_1-MLC',  size: '~40GB',  label: '70B · frontier · needs serious GPU + 64GB+ RAM' },
-  };
+    'llama-70b': { id: 'Llama-3.1-70B-Instruct-q4f16_1-MLC',  size: '~40GB',  label: '70B · frontier · needs serious GPU + 64GB+ RAM' }};
   const DEFAULT_MODEL = 'llama-3b';
 
   const T3_PROVIDERS = {
     anthropic: { label: 'Anthropic Claude', models: ['claude-sonnet-4-5','claude-opus-4-7','claude-haiku-4-5'], default: 'claude-sonnet-4-5', url: 'https://api.anthropic.com/v1/messages' },
     openai:    { label: 'OpenAI',           models: ['gpt-4o','gpt-4o-mini','o1-mini'],                          default: 'gpt-4o-mini',      url: 'https://api.openai.com/v1/chat/completions' },
-    google:    { label: 'Google Gemini',    models: ['gemini-1.5-pro','gemini-1.5-flash','gemini-2.0-flash-exp'], default: 'gemini-1.5-flash', url: 'https://generativelanguage.googleapis.com/v1beta/models/' },
-  };
+    google:    { label: 'Google Gemini',    models: ['gemini-1.5-pro','gemini-1.5-flash','gemini-2.0-flash-exp'], default: 'gemini-1.5-flash', url: 'https://generativelanguage.googleapis.com/v1beta/models/' }};
 
   // ─── State ───────────────────────────────────────────────────────
   const STATE = {
     config: loadConfig(),
     ai: { ready: false, loading: false, progress: 0, engine: null, model: null },
-    mesh: { active: false, peers: new Map(), bc: null, signal: null },
-  };
+    mesh: { active: false, peers: new Map(), bc: null, signal: null }};
 
   function loadConfig() {
     try { return JSON.parse(localStorage.getItem('fall-kit.config') || '{}'); }
@@ -155,8 +152,7 @@ table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}th,td{pa
     if (tier === 'T2' && STATE.ai.ready && STATE.ai.engine) {
       const r = await STATE.ai.engine.chat.completions.create({
         messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userMsg }],
-        max_tokens: maxTokens,
-      });
+        max_tokens: maxTokens});
       return r.choices[0].message.content;
     }
     if (tier === 'T3' && STATE.config.api_key && STATE.config.api_provider) {
@@ -173,8 +169,7 @@ table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}th,td{pa
       const r = await fetch(T3_PROVIDERS.anthropic.url, {
         method: 'POST',
         headers: { 'content-type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01' },
-        body: JSON.stringify({ model, max_tokens: maxTokens, system: sys, messages: [{ role: 'user', content: msg }] }),
-      });
+        body: JSON.stringify({ model, max_tokens: maxTokens, system: sys, messages: [{ role: 'user', content: msg }] })});
       if (!r.ok) throw new Error('Anthropic ' + r.status + ': ' + (await r.text()).slice(0, 200));
       const j = await r.json();
       return j.content[0].text;
@@ -183,8 +178,7 @@ table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}th,td{pa
       const r = await fetch(T3_PROVIDERS.openai.url, {
         method: 'POST',
         headers: { 'content-type': 'application/json', 'Authorization': 'Bearer ' + key },
-        body: JSON.stringify({ model, max_tokens: maxTokens, messages: [{ role: 'system', content: sys }, { role: 'user', content: msg }] }),
-      });
+        body: JSON.stringify({ model, max_tokens: maxTokens, messages: [{ role: 'system', content: sys }, { role: 'user', content: msg }] })});
       if (!r.ok) throw new Error('OpenAI ' + r.status);
       const j = await r.json();
       return j.choices[0].message.content;
@@ -193,8 +187,7 @@ table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}th,td{pa
       const r = await fetch(T3_PROVIDERS.google.url + model + ':generateContent?key=' + encodeURIComponent(key), {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: sys + '\n\n---\n\n' + msg }] }], generationConfig: { maxOutputTokens: maxTokens } }),
-      });
+        body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: sys + '\n\n---\n\n' + msg }] }], generationConfig: { maxOutputTokens: maxTokens } })});
       if (!r.ok) throw new Error('Google ' + r.status);
       const j = await r.json();
       return j.candidates[0].content.parts[0].text;
@@ -435,8 +428,7 @@ table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}th,td{pa
     openMint: openMint,  // v1.2 · launch kcc-mint with this seed prefilled as parent
     MODELS: WEBLLM_MODELS,
     PROVIDERS: T3_PROVIDERS,
-    state: STATE,
-  };
+    state: STATE};
 })(typeof window !== 'undefined' ? window : globalThis);
 
 </script>
@@ -477,8 +469,7 @@ const TEMPLATE_DEFS=[
     {id:'conduct',name:'Conduct Regulations',locked:true,text:'The Agency operates in accordance with the Conduct of Employment Agencies and Employment Businesses Regulations 2003:\n\n1. The Agency will use reasonable endeavours to verify the identity, right to work, qualifications, and experience of all Candidates (Regulation 22)\n2. The Agency will provide the Client with details of any Candidate introduced, including confirmation of checks performed\n3. The Client shall not engage any Candidate introduced by the Agency without paying the applicable fee, whether directly or through a third party, for a period of 6 months from the date of Introduction\n4. Transfer fees for Temporary Workers shall comply with Regulation 10'},
     {id:'awr',name:'AWR',locked:true,text:'**Agency Workers Regulations 2010:**\n\nThe Client acknowledges that:\n1. After 12 qualifying weeks in the same role, Temporary Workers are entitled to the same basic working and employment conditions as if directly recruited\n2. The Client must provide the Agency with information about relevant terms and conditions to enable compliance\n3. From day one, Temporary Workers are entitled to access to collective facilities and amenities\n4. The Client must inform the Agency of any vacant positions available'},
     {id:'ir35',name:'IR35',locked:true,text:'**Off-Payroll Working Rules (IR35):**\n\nWhere the Client is a medium or large enterprise (as defined by the Companies Act 2006 s.382):\n1. The Client is responsible for determining the employment status of any Candidate operating through a personal service company\n2. The Client must provide a Status Determination Statement (SDS) before the Candidate begins work\n3. The Client must take reasonable care in reaching the determination\n4. The Client must provide the Candidate with the right to appeal the determination\n5. The Agency will apply PAYE deductions where an "inside IR35" determination is made'},
-    {id:'sigs',name:'Signatures',locked:false,text:'[SIGNATURE_BLOCK]'},
-   ]},
+    {id:'sigs',name:'Signatures',locked:false,text:'[SIGNATURE_BLOCK]'}]},
   {id:'tob-candidate',name:'Terms of Engagement (Candidate)',code:'TOB-C01',cat:'terms',desc:'Standard terms between agency and candidate/work-seeker',
    sections:[
     {id:'header',name:'Header',locked:false,text:'**TERMS OF ENGAGEMENT — WORK-SEEKER**\n\nBetween: {{agency.name}} ("the Agency")\n{{agency.address}}\n\nAnd: {{candidate.name}} ("the Work-Seeker")\n{{candidate.address}}\n\nDate: {{ctx.date}}'},
@@ -486,50 +477,42 @@ const TEMPLATE_DEFS=[
     {id:'obligations',name:'Work-Seeker Obligations',locked:false,text:'The Work-Seeker agrees to:\n1. Provide accurate and up-to-date information about qualifications, experience, and right to work\n2. Notify the Agency immediately of any change in circumstances that may affect suitability\n3. Comply with the Client\'s reasonable instructions during assignments\n4. Not enter into a direct arrangement with any Client introduced by the Agency without the Agency\'s consent for a period of {{ctx.restrictionMonths}} months'},
     {id:'temp',name:'Temporary Assignments',locked:false,text:'**Pay rate:** as confirmed per assignment\n**Holiday entitlement:** 5.6 weeks (28 days pro rata)\n**Holiday pay:** {{ctx.holidayPayMethod}}\n**Notice period:** {{ctx.noticePeriod}}'},
     {id:'gdpr',name:'Data Protection',locked:true,text:'**UK GDPR / Data Protection Act 2018:**\n\nThe Agency processes your personal data for the purpose of providing recruitment services. Lawful basis: consent (for applications) and legitimate interest (for proactive job matching).\n\nYour rights: access, rectification, erasure, restriction, portability, objection.\n\nData retention: your data will be retained for the period agreed at registration. You may withdraw consent at any time.\n\nFull privacy notice available on request.'},
-    {id:'sigs',name:'Signatures',locked:false,text:'[SIGNATURE_BLOCK]'},
-   ]},
+    {id:'sigs',name:'Signatures',locked:false,text:'[SIGNATURE_BLOCK]'}]},
   {id:'assignment-schedule',name:'Assignment Schedule',code:'AS-01',cat:'assignment',desc:'Temporary assignment details and conditions',
    sections:[
     {id:'header',name:'Header',locked:false,text:'**ASSIGNMENT SCHEDULE**\n\nAssignment ref: {{ctx.assignmentRef}}\nDate: {{ctx.date}}\n\n**Worker:** {{candidate.name}}\n**Client:** {{client.company}}\n**Location:** {{ctx.location}}'},
     {id:'details',name:'Assignment Details',locked:false,text:'**Role:** {{ctx.role}}\n**Start date:** {{ctx.startDate}}\n**Expected duration:** {{ctx.duration}}\n**Working hours:** {{ctx.hours}}\n**Pay rate:** {{ctx.payRate}}\n**Holiday pay:** {{ctx.holidayPay}}\n**Expenses:** {{ctx.expenses}}'},
     {id:'conduct',name:'Conduct Requirements',locked:true,text:'Per the Conduct of Employment Agencies and Employment Businesses Regulations 2003:\n\n1. The Agency confirms that suitability checks have been performed (Regulation 22)\n2. The Worker must inform the Agency if they are unable to attend or will be late\n3. Either party may terminate this assignment with {{ctx.noticePeriod}} notice\n4. The Worker is reminded that timesheets must be submitted weekly for payment processing'},
     {id:'awr',name:'AWR Notice',locked:true,text:'**Agency Workers Regulations 2010 notice:**\n\nAfter 12 qualifying weeks in this assignment, you will be entitled to the same basic working and employment conditions as if you had been recruited directly by the Client. This includes: basic pay, overtime rates, shift allowances, annual leave, and access to collective facilities.\n\nYour qualifying week count starts from: {{ctx.startDate}}'},
-    {id:'sigs',name:'Signatures',locked:false,text:'[SIGNATURE_BLOCK]'},
-   ]},
+    {id:'sigs',name:'Signatures',locked:false,text:'[SIGNATURE_BLOCK]'}]},
   {id:'awr-letter',name:'AWR Notification Letter',code:'AWR-01',cat:'compliance',desc:'12-week AWR entitlement notification to temp worker',
    sections:[
     {id:'letter',name:'Letter',locked:false,text:'**{{agency.name}}**\n{{agency.address}}\n\nDate: {{ctx.date}}\n\n{{candidate.name}}\n{{candidate.address}}\n\nDear {{candidate.name}},\n\n**Re: Agency Workers Regulations 2010 — 12-Week Qualifying Period**\n\nI am writing to inform you that you have now completed (or are approaching) 12 qualifying weeks in your current assignment with {{client.company}}.'},
     {id:'entitlements',name:'Entitlements',locked:true,text:'Under the Agency Workers Regulations 2010, you are now entitled to the same basic working and employment conditions as if you had been recruited directly by the Client. This includes:\n\n1. **Pay:** the same basic pay (including overtime, shift allowances, unsocial hours, and annual leave) as a comparable direct recruit\n2. **Working time:** the same rest breaks, rest periods, and night work limits\n3. **Annual leave:** the same holiday entitlement (above the statutory minimum)\n\nYou have been entitled to access to collective facilities and amenities (canteen, childcare, transport) from day one of your assignment.'},
     {id:'action',name:'Action',locked:false,text:'We have obtained the relevant pay and conditions information from {{client.company}} and your pay will be adjusted accordingly from {{ctx.adjustmentDate}}.\n\nYour new pay rate will be: {{ctx.newPayRate}}\n\nIf you have any questions, please contact {{ctx.consultantName}} on {{ctx.consultantPhone}}.'},
-    {id:'close',name:'Close',locked:false,text:'Yours sincerely,\n\n{{ctx.senderName}}\n{{ctx.senderTitle}}\n{{agency.name}}'},
-   ]},
+    {id:'close',name:'Close',locked:false,text:'Yours sincerely,\n\n{{ctx.senderName}}\n{{ctx.senderTitle}}\n{{agency.name}}'}]},
   {id:'ir35-sds-cover',name:'IR35 SDS Cover Letter',code:'IR35-01',cat:'compliance',desc:'Cover letter for Status Determination Statement',
    sections:[
     {id:'letter',name:'Letter',locked:false,text:'**{{agency.name}}**\n{{agency.address}}\n\nDate: {{ctx.date}}\n\nTo: {{candidate.name}}\nRe: {{client.company}} — {{ctx.role}}\n\n**Status Determination Statement — Off-Payroll Working Rules**'},
     {id:'determination',name:'Determination',locked:false,text:'The end-client, {{client.company}}, has assessed the engagement described above and determined that for the purposes of the off-payroll working rules (Chapter 10, Part 2, ITEPA 2003), this engagement falls:\n\n**☐ INSIDE IR35** — deemed employment. PAYE deductions will be applied by the fee-payer.\n**☐ OUTSIDE IR35** — the worker\'s PSC is responsible for its own tax obligations.\n\n**Reasons for determination:**\n{{ctx.reasons}}'},
     {id:'rights',name:'Rights',locked:true,text:'**Your rights under the off-payroll working rules:**\n\n1. You have the right to receive a Status Determination Statement (SDS) from the end-client before the engagement begins\n2. You have the right to appeal the determination within the client\'s dispute resolution process\n3. The client must respond to your appeal within 45 days\n4. If you disagree with the determination after the internal process, you may raise the matter with HMRC\n5. The client took reasonable care in reaching this determination, as required by the legislation'},
-    {id:'close',name:'Close',locked:false,text:'Please review the attached SDS. If you wish to dispute the determination, please contact {{ctx.consultantName}} within {{ctx.appealDays}} days.\n\nYours sincerely,\n{{ctx.senderName}}\n{{agency.name}}'},
-   ]},
+    {id:'close',name:'Close',locked:false,text:'Please review the attached SDS. If you wish to dispute the determination, please contact {{ctx.consultantName}} within {{ctx.appealDays}} days.\n\nYours sincerely,\n{{ctx.senderName}}\n{{agency.name}}'}]},
   {id:'interview-confirm',name:'Interview Confirmation',code:'INT-01',cat:'placement',desc:'Interview details and preparation for candidate',
    sections:[
     {id:'letter',name:'Confirmation',locked:false,text:'**INTERVIEW CONFIRMATION**\n\nDate: {{ctx.date}}\n\nDear {{candidate.name}},\n\nI am pleased to confirm your interview:\n\n**Client:** {{client.company}}\n**Role:** {{ctx.role}}\n**Date:** {{ctx.interviewDate}}\n**Time:** {{ctx.interviewTime}}\n**Location:** {{ctx.interviewLocation}}\n**Format:** {{ctx.interviewFormat}}\n**Interviewer(s):** {{ctx.interviewers}}'},
     {id:'prep',name:'Preparation',locked:false,text:'**Preparation notes:**\n{{ctx.prepNotes}}\n\n**Dress code:** {{ctx.dressCode}}\n\n**Documents to bring:**\n- Photo ID\n- Right to Work documents (if not already verified)\n- Copies of relevant qualifications\n- Portfolio / examples of work (if applicable)'},
-    {id:'feedback',name:'Feedback',locked:false,text:'Please confirm your attendance by replying to this message. If you need to reschedule, contact me as soon as possible.\n\nAfter the interview, I will follow up for feedback from both parties.\n\nBest regards,\n{{ctx.consultantName}}\n{{agency.name}}\n{{agency.phone}}'},
-   ]},
+    {id:'feedback',name:'Feedback',locked:false,text:'Please confirm your attendance by replying to this message. If you need to reschedule, contact me as soon as possible.\n\nAfter the interview, I will follow up for feedback from both parties.\n\nBest regards,\n{{ctx.consultantName}}\n{{agency.name}}\n{{agency.phone}}'}]},
   {id:'offer-letter',name:'Offer Confirmation Letter',code:'OFR-01',cat:'placement',desc:'Confirming permanent placement offer details',
    sections:[
     {id:'letter',name:'Letter',locked:false,text:'**{{agency.name}}**\n{{agency.address}}\n\nDate: {{ctx.date}}\n\nDear {{candidate.name}},\n\n**Congratulations — Offer of Employment**\n\nI am delighted to confirm that {{client.company}} has offered you the following position:'},
     {id:'details',name:'Offer Details',locked:false,text:'**Role:** {{ctx.role}}\n**Start date:** {{ctx.startDate}}\n**Salary:** {{ctx.salary}} per annum\n**Benefits:** {{ctx.benefits}}\n**Location:** {{ctx.location}}\n**Hours:** {{ctx.hours}}\n**Notice period:** {{ctx.noticePeriod}}\n**Probation:** {{ctx.probation}}'},
-    {id:'next',name:'Next Steps',locked:false,text:'To accept this offer, please:\n1. Confirm acceptance to the agency and client\n2. Provide your start date confirmation\n3. Complete any outstanding pre-employment checks\n\nThe formal contract of employment will be issued by {{client.company}} directly.\n\nCongratulations again.\n\n{{ctx.consultantName}}\n{{agency.name}}'},
-   ]},
+    {id:'next',name:'Next Steps',locked:false,text:'To accept this offer, please:\n1. Confirm acceptance to the agency and client\n2. Provide your start date confirmation\n3. Complete any outstanding pre-employment checks\n\nThe formal contract of employment will be issued by {{client.company}} directly.\n\nCongratulations again.\n\n{{ctx.consultantName}}\n{{agency.name}}'}]},
   {id:'reference-request',name:'Reference Request',code:'REF-01',cat:'admin',desc:'Reference request to previous employer',
    sections:[
     {id:'letter',name:'Letter',locked:false,text:'**{{agency.name}}**\n{{agency.address}}\n\nDate: {{ctx.date}}\n\nTo: {{ctx.refereeName}}\n{{ctx.refereeCompany}}\n{{ctx.refereeAddress}}\n\nDear {{ctx.refereeName}},\n\n**Reference Request — {{candidate.name}}**\n\n{{candidate.name}} has applied for a position through our agency and has provided your details as a referee. We would be grateful if you could complete the following:'},
     {id:'questions',name:'Questions',locked:false,text:'1. In what capacity did you know {{candidate.name}}?\n2. Dates of employment: from _______ to _______\n3. Job title / role: _______\n4. Reason for leaving: _______\n5. Would you re-employ this person? Yes / No\n6. Any concerns regarding conduct or capability? _______\n7. Any additional comments: _______'},
     {id:'gdpr',name:'GDPR Notice',locked:true,text:'This reference will be processed in accordance with UK GDPR. The reference will be shared with the prospective employer. The candidate has provided consent for this reference to be sought. Data will be retained for the duration of the recruitment process plus 6 months.\n\nPlease return this form to {{agency.email}}.'},
-    {id:'close',name:'Close',locked:false,text:'Thank you for your time.\n\n{{ctx.consultantName}}\n{{agency.name}}\n{{agency.phone}}'},
-   ]},
-];
+    {id:'close',name:'Close',locked:false,text:'Thank you for your time.\n\n{{ctx.consultantName}}\n{{agency.name}}\n{{agency.phone}}'}]}];
 
 let state={active:'templates',firm:null,candidates:[],clients:[],documents:[],audit:[],
   ui:{selectedTemplate:null,selectedCandidate:null,selectedClient:null,editingSections:{},extraContext:'',chat:[]},
@@ -562,7 +545,7 @@ function buildContext(){const f=state.firm||{};const map={'agency.name':f.name||
   return map}
 function resolveText(text,ctx){return text.replace(/\{\{([^}]+)\}\}/g,(_,key)=>{const v=ctx[key.trim()];return v!=null&&v!==''?String(v):`<span class="placeholder-empty">{{${key.trim()}}}</span>`})}
 function renderPaper(tpl,ctx,sections){return `<div class="doc-meta">${esc(tpl.name)} · ${esc(tpl.code)} · ${TOOLNAME} · ${dateStr(now())}</div>\n`+sections.map(s=>{const text=state.ui.editingSections?.[s.id]??s.text;const html=resolveText(text,ctx);if(s.locked)return `<div class="clause-locked">${mdB(html)}</div>`;return mdB(html)}).join('\n')}
-function mdB(md){return md.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n\n/g,'</p><p>').replace(/\n(\d+\.\s)/g,'<br>$1').replace(/\n-\s/g,'<br>• ').replace(/☐/g,'<span style="font-size:16px">☐</span>').replace(/\[SIGNATURE_BLOCK\]/g,'<div class="sig-block"><div><div class="sig-line"></div>Signed (Agency)</div><div><div class="sig-line"></div>Signed (Counterparty)</div></div>').replace(/^/,'<p>').replace(/$/,'</p>')}
+function mdB(md){return md.replace(/\*\*(.+?)\*\*/g,'<strong>TBA</strong>').replace(/\n\n/g,'</p><p>').replace(/\n(\d+\.\s)/g,'<br>TBA').replace(/\n-\s/g,'<br>• ').replace(/☐/g,'<span style="font-size:16px">☐</span>').replace(/\[SIGNATURE_BLOCK\]/g,'<div class="sig-block"><div><div class="sig-line"></div>Signed (Agency)</div><div><div class="sig-line"></div>Signed (Counterparty)</div></div>').replace(/^/,'<p>').replace(/$/,'</p>')}
 
 function render(){$('#tabNav').innerHTML=TABS.map(t=>`<button class="${state.active===t.id?'active':''}" onclick="switchTab('${t.id}')">${t.label}</button>`).join('');const v=$('#view');switch(state.active){case 'templates':return renderTemplates(v);case 'generate':return renderGenerate(v);case 'documents':return renderDocuments(v);case 'agency':return renderAgency(v);case 'qa':return renderQA(v)}}
 function switchTab(id){state.active=id;persistUI();render()}
@@ -606,8 +589,7 @@ const T0_QA=[
   {q:/ir35|sds|status.?determination|off.?payroll/i,a:'Off-payroll (IR35): medium/large clients issue SDS before engagement. Agency must pass SDS to worker with client\'s reasons. Worker can appeal — client must respond within 45 days. If "inside", fee-payer (often agency) operates PAYE. Cover letter should explain determination, reasons, and appeal rights. CEST tool recommended but not conclusive. Factors: control, substitution, mutuality.'},
   {q:/transfer|temp.?to.?perm|fee|regulation.?10/i,a:'Conduct Regulations 2003 Reg 10: transfer fee provisions. Hirer can either: (1) pay the transfer fee, or (2) agree an extended hire period (max 8 months from Regulation amendment). After the extended period, no fee is payable. Transfer fee must be reasonable and reflect actual costs. Fee reduces over time — cannot charge the same fee after 6 months as after 1 month.'},
   {q:/reference|check|suitability/i,a:'Conduct Regs Reg 22: take reasonably practicable steps to verify suitability — qualifications, experience, authorisation. References not mandatory but best practice. GDPR applies: candidate consent required, reference processed under legitimate interest. Retain reference for duration of relationship + 6 months. Cannot disclose reference content to candidate without referee\'s consent (unless required by law).'},
-  {q:/rebate|refund|guarantee/i,a:'Fee rebate: standard market practice for permanent placements. Typical structure: pro-rata refund if candidate leaves within guarantee period (usually 8-13 weeks). Conditions: client must notify agency promptly (usually 7 days), allow agency to find replacement. Rebate does not apply if: client changes role significantly, redundancy, constructive dismissal. Not required by law but expected by clients.'},
-];
+  {q:/rebate|refund|guarantee/i,a:'Fee rebate: standard market practice for permanent placements. Typical structure: pro-rata refund if candidate leaves within guarantee period (usually 8-13 weeks). Conditions: client must notify agency promptly (usually 7 days), allow agency to find replacement. Rebate does not apply if: client changes role significantly, redundancy, constructive dismissal. Not required by law but expected by clients.'}];
 function askT0(q){for(const r of T0_QA){if(r.q.test(q))return {answer:r.a,source:'T0 · UK recruitment rules'}}return null}
 async function askT3(q){if(!state.settings.anthropicKey)return null;try{const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'x-api-key':state.settings.anthropicKey,'anthropic-version':'2023-06-01','content-type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,messages:[{role:'user',content:'You are a UK recruitment agency document expert. Conduct Regulations 2003, AWR 2010, IR35, EAA 1973, GDPR. Concise.\n\n'+q}]})});if(!res.ok)return null;const j=await res.json();return {answer:j.content?.[0]?.text,source:'T3 · Anthropic'}}catch(e){return null}}
 function renderQA(v){v.innerHTML=`<div class="section-h"><h2>Q & A</h2><div class="sub">T0 + T3 BYOK</div></div><div class="card" style="max-width:780px"><div class="chat" id="chatBox">${(state.ui.chat||[]).map(m=>`<div class="msg ${m.role}">${esc(m.text)}${m.source?`<div class="src">${esc(m.source)}</div>`:''}</div>`).join('')}</div><div class="chat-input"><input id="chatIn" placeholder="Ask… 'TOB requirements?' · 'AWR 12-week letter?' · 'IR35 SDS?'" onkeydown="if(event.key==='Enter')askQ()"><button class="btn brass" onclick="askQ()">Ask</button></div></div>`;const box=$('#chatBox');if(box)box.scrollTop=box.scrollHeight}
