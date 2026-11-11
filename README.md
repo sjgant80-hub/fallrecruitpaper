@@ -37,4 +37,4 @@ Generate, preview, and issue UK recruitment documents from 8 templates. Locked r
 
 ## Licence
 
-MIT · Simon Gant · prime 991 · ◊·κ=1.
+MIT · Simon Gant.
